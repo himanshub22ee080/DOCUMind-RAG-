@@ -1,10 +1,15 @@
-import('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
-print("Successfully replaced sqlite3 with pysqlite3.") # For logging
+try:
+    print("Attempting to override sqlite3 with pysqlite3...")
+    __import__('pysqlite3')
+    import sys
+    sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+    print("Successfully replaced sqlite3 with pysqlite3.")
 except ImportError:
-print("pysqlite3 not found, using standard sqlite3.") # For logging
-pass
+    print("pysqlite3 not found, using standard sqlite3.")
+    pass
+except KeyError:
+     print("pysqlite3 already loaded or override failed.")
+     pass
 import streamlit as st
 import os
 from dotenv import load_dotenv
