@@ -2,7 +2,7 @@
 
 This Streamlit application allows users to upload one or more PDF documents and engage in a conversation to ask questions based on the content within those documents. The answers are generated using Google's Gemini AI models, retrieving relevant information from the uploaded text using an in-memory FAISS vector store.
 
-**Live Demo:** [https://himanshu-docu-mind-ojm9g2ucp7fxhn3zndvols.streamlit.app/] *(<- Replace this with the actual URL from Streamlit Community Cloud)*
+**Live Demo:** [https://himanshu-docu-mind-ojm9g2ucp7fxhn3zndvols.streamlit.app/] 
 
 ![Main Page](https://github.com/user-attachments/assets/7a5eb48f-d555-4d8a-859d-cd41fb6114a9)
 
