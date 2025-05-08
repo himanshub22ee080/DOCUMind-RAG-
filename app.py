@@ -1,3 +1,10 @@
+import('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+print("Successfully replaced sqlite3 with pysqlite3.") # For logging
+except ImportError:
+print("pysqlite3 not found, using standard sqlite3.") # For logging
+pass
 import streamlit as st
 import os
 from dotenv import load_dotenv
