@@ -187,127 +187,63 @@ def get_conversational_qa_chain(vector_db):
 def main():
     load_dotenv()
     st.set_page_config(page_title="DocuMind Q&A (PyPDF + Google AI)", layout="wide")
-    
-    # --- Optional: Clear vector store on first load of a session ---
-    # Uncomment the block below if you PREFER to always start fresh on new sessions
-    # on ephemeral storage like Streamlit Cloud, ignoring potential persistence.
-    # if "initialized" not in st.session_state:
-    #     print(f"Attempting to clear vector store '{VECTOR_STORE_DIR}' on app session start...")
-    #     clear_vector_store()
-    #     st.session_state.initialized = True 
-    # --- End Optional Clear ---
-
     st.title("📄 DocuMind Q&A")
+
     model_name_display = "Google AI" 
     parser_name_display = "PyPDF"     
     st.caption(f"✨ Powered by {model_name_display} | Parser: {parser_name_display} | Conversational Mode")
 
-    # Initialize session state
+    # Initialize session state (Keep this simple for now)
     if "vector_db" not in st.session_state: st.session_state.vector_db = None
     if "qa_chain" not in st.session_state: st.session_state.qa_chain = None
     if "processed_files_info" not in st.session_state: st.session_state.processed_files_info = None
     if "messages" not in st.session_state: st.session_state.messages = []
+    # No need for the 'initialized' flag if we clear before processing
 
     with st.sidebar:
         st.header("📁 Document Setup")
         st.info(f"Current Mode: **{model_name_display}** with **{parser_name_display}**")
         
         uploaded_files = st.file_uploader(
-            "Upload PDF files", type="pdf", accept_multiple_files=True, key="pdf_uploader_pypdf_v3"
+            "Upload PDF files", type="pdf", accept_multiple_files=True, key="pdf_uploader_pypdf_v5" # New key
         )
-        force_reprocess = st.checkbox(
-            f"Force re-process & clear {parser_name_display} vector store", key="reprocess_pypdf_v3", 
-            help=f"This will delete and recreate the '{VECTOR_STORE_DIR}' directory."
-        )
+        # Removed force_reprocess checkbox - simplifying to always process on button click for this fix
 
-        if st.button(f"Process Uploaded PDF(s)", key="process_button_pypdf_v3", disabled=not uploaded_files):
+        if st.button(f"Process Uploaded PDF(s)", key="process_button_pypdf_v5", disabled=not uploaded_files):
             with st.spinner(f"Processing PDFs with {parser_name_display} & {model_name_display}..."):
                 
-                # --- Logic for Handling Vector Store ---
-                load_existing = False
-                # 1. Check if forced reprocess is selected
-                if force_reprocess:
-                    clear_vector_store() # Clears disk and resets session state vector_db/qa_chain
-                    st.session_state.messages = [] # Clear messages on forced reprocess
-                else:
-                    # 2. Check if a store directory exists and session info matches
-                    if os.path.exists(VECTOR_STORE_DIR) and st.session_state.processed_files_info:
-                        if st.session_state.processed_files_info.get("parser", "").lower() == parser_name_display.lower() and \
-                           st.session_state.processed_files_info.get("model_type") == model_name_display:
-                            load_existing = True # Potentially load
-                        else:
-                            # Mismatch in config, clear the old store
-                            st.warning("Configuration mismatch detected. Clearing incompatible vector store.")
-                            clear_vector_store()
-                            st.session_state.messages = []
-                    elif os.path.exists(VECTOR_STORE_DIR) and not st.session_state.processed_files_info:
-                        # Store exists, but we have no info about it. Assume incompatible/stale.
-                         st.warning("Found existing vector store with unknown configuration. Clearing it.")
-                         clear_vector_store()
-                         st.session_state.messages = []
-
-
-                # 3. Attempt to load if conditions met
-                if load_existing:
-                    st.info(f"Attempting to load existing vector store '{VECTOR_STORE_DIR}'...")
-                    try:
-                        # More robust check: use chromadb client directly
-                        client = chromadb.PersistentClient(path=VECTOR_STORE_DIR)
-                        client.get_collection(name="langchain") # Check if default collection exists
-                        
-                        # If successful, load using LangChain wrapper
-                        embeddings_model_loader = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-                        st.session_state.vector_db = Chroma(
-                            persist_directory=VECTOR_STORE_DIR, 
-                            embedding_function=embeddings_model_loader,
-                            collection_name="langchain" # Match default
-                        )
-                        st.info("Loaded existing vector store.")
-                        # We already have processed_files_info, don't reset messages
-                    except Exception as e:
-                        # --- If loading fails, clear and prepare for reprocessing ---
-                        st.warning(f"Could not load existing vector store (may be corrupt or incompatible): {e}. Clearing and re-processing.")
-                        clear_vector_store() # Deletes dir, resets session state vector_db/qa_chain
-                        st.session_state.messages = [] # Clear messages if store was corrupt
-                        load_existing = False # Ensure we proceed to process
-                        # --- End clearing ---
-
-                # 4. Process PDFs if not loaded or if vector_db is None after failed load attempt
-                if not load_existing or st.session_state.vector_db is None:
-                    # Ensure store is clear if we are about to create a new one
-                    if not force_reprocess and os.path.exists(VECTOR_STORE_DIR):
-                         # If loading wasn't attempted or failed, ensure dir is clear before creating new
-                         clear_vector_store() 
-                         st.session_state.messages = []
-
-                    # Process PDFs and create a new vector store
-                    st.session_state.vector_db = load_and_process_pdfs(uploaded_files)
-                    st.session_state.messages = [] # Clear messages when new docs processed
-
-
-                # 5. Create QA chain if vector_db is available
+                # --- ALWAYS CLEAR BEFORE PROCESSING ---
+                print(f"Clearing vector store '{VECTOR_STORE_DIR}' before processing...")
+                clear_vector_store() # Ensures ChromaDB starts with a non-existent/empty directory
+                st.session_state.messages = [] # Reset chat on new processing
+                st.session_state.processed_files_info = None # Reset file info
+                # --- END CLEAR ---
+                
+                # Process PDFs and create a new vector store
+                st.session_state.vector_db = load_and_process_pdfs(uploaded_files)
+                
+                # Create QA chain IF vector_db was successfully created
                 if st.session_state.vector_db:
                     st.session_state.qa_chain = get_conversational_qa_chain(st.session_state.vector_db)
-                    # Update processed files info only if we actually processed or successfully loaded
+                    # Update processed files info
                     st.session_state.processed_files_info = {
                         "names": [f.name for f in uploaded_files], 
                         "model_type": model_name_display,
                         "parser": parser_name_display 
                     }
-                    st.success(f"PDFs ready! Ready to chat.")
+                    st.success(f"PDFs processed! Ready to chat.")
                 else:
-                    # Ensure chain is cleared if processing failed
+                    # Ensure chain/info is cleared if processing failed
                     st.session_state.qa_chain = None 
                     st.session_state.processed_files_info = None
-                    st.error(f"PDF processing failed. Vector store could not be created/loaded.")
-                # --- End Logic for Handling Vector Store ---
-
+                    st.error(f"PDF processing failed. Vector store could not be created.")
+        
         if st.session_state.processed_files_info:
             parser_info = f" (Parser: {st.session_state.processed_files_info.get('parser', 'Unknown')})"
             st.success(f"Active Docs ({st.session_state.processed_files_info['model_type']}{parser_info}):")
             for name in st.session_state.processed_files_info["names"]: st.markdown(f"- `{name}`")
         
-        if st.button("Clear Chat History", key="clear_chat_pypdf_v3"):
+        if st.button("Clear Chat History", key="clear_chat_pypdf_v5"):
             st.session_state.messages = []
             st.rerun()
 
