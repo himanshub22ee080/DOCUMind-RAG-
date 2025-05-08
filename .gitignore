@@ -1,0 +1,7 @@
+.venv/
+.env
+__pycache__/
+*.pyc
+*.db
+pypdf_google_ai_vector_store/ # Or whatever your vector store directory is named
+temp_pdf_uploads/
