@@ -4,7 +4,7 @@ This Streamlit application allows users to upload one or more PDF documents and 
 
 **Live Demo:** [https://himanshu-docu-mind-ojm9g2ucp7fxhn3zndvols.streamlit.app/] *(<- Replace this with the actual URL from Streamlit Community Cloud)*
 
-<!-- ![App Screenshot](link_to_your_screenshot.png) -->
+![Main Page](https://github.com/user-attachments/assets/7a5eb48f-d555-4d8a-859d-cd41fb6114a9)
 
 ## Features
 
