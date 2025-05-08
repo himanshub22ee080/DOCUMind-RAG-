@@ -9,3 +9,4 @@ python-dotenv
 tiktoken
 protobuf==3.20.3
 setuptools
+numpy<2.0.0
