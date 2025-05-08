@@ -133,7 +133,7 @@ def get_conversational_qa_chain(vector_db):
     if USE_GOOGLE_AI:
         st.info("Initializing Google AI LLM (gemini-1.5-flash-latest)...")
         try:
-            llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash-latest", temperature=0.3, convert_system_message_to_human=True)
+            llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash-latest", temperature=1, convert_system_message_to_human=True)
             st.info("Google AI LLM initialized.")
         except Exception as e: st.error(f"Error initializing LLM: {e}."); return None
     if llm is None: st.error("LLM not initialized."); return None
