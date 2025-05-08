@@ -1,10 +1,7 @@
-# No pysqlite3 override needed at the top anymore
-
 import streamlit as st
 import os
 from dotenv import load_dotenv
-# import shutil # No longer needed
-import traceback # For detailed error printing
+import traceback 
 
 # LangChain components
 from langchain_community.document_loaders import PyPDFLoader
@@ -30,8 +27,6 @@ if USE_GOOGLE_AI:
 # No VECTOR_STORE_DIR needed for in-memory FAISS
 
 # --- Core Functions ---
-
-# No clear_vector_store function needed
 
 def load_and_process_pdfs(pdf_files, chunk_size=1500, chunk_overlap=300):
     """Loads PDFs, splits them, filters metadata, and creates an IN-MEMORY FAISS vector store."""
@@ -270,6 +265,5 @@ def main():
     else:
         st.info("Please upload and process PDF files using the sidebar to start chatting.")
 
-# Corrected the entry point check
 if __name__ == "__main__":
     main()
