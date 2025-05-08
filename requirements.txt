@@ -1,8 +1,9 @@
 streamlit
 langchain
 langchain-community
-langchain-google-genai 
+langchain-google-genai
 pypdf
 chromadb
 python-dotenv
 tiktoken
+protobuf==3.20.3 
