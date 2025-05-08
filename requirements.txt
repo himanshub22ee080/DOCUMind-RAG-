@@ -3,10 +3,9 @@ langchain
 langchain-community
 langchain-google-genai
 pypdf
-pysqlite3-binary
-chromadb>=0.4.15,<0.5.0
+faiss-cpu 
 python-dotenv
 tiktoken
 protobuf==3.20.3
 setuptools
-numpy<2.0.0
+numpy<2.0.0 
