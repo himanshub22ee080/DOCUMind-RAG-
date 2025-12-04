@@ -93,14 +93,14 @@ def load_and_process_pdfs(pdf_files, chunk_size=1500, chunk_overlap=300):
     # Initialize Embedding Model
     embeddings_model = None
     if USE_GOOGLE_AI:
-    st.info("Using Google AI Embeddings (models/embedding-001)...")
-    try:
-        from langchain_google_genai import GoogleGenerativeAIEmbeddings
-        embeddings_model = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-        st.success("Google AI Embeddings initialized.")
-    except Exception as e:
-        st.error(f"Failed to initialize Google AI Embeddings: {e}")
-        return None
+        st.info("Using Google AI Embeddings (models/embedding-001)...")
+        try:
+            from langchain_google_genai import GoogleGenerativeAIEmbeddings
+            embeddings_model = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+            st.success("Google AI Embeddings initialized.")
+        except Exception as e:
+            st.error(f"Failed to initialize Google AI Embeddings: {e}")
+            return None
 
 else:
     st.info("Using FREE HuggingFace Embeddings (MiniLM)...")
@@ -281,6 +281,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
