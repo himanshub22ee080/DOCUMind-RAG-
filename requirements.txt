@@ -10,5 +10,4 @@ setuptools
 numpy<2.0.0 
 langchain-text-splitters
 langchain==0.1.14
-
-
+sentence-transformers
