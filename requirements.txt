@@ -1,5 +1,4 @@
 streamlit
-langchain
 langchain-community
 langchain-google-genai
 pypdf
@@ -10,3 +9,6 @@ protobuf==3.20.3
 setuptools
 numpy<2.0.0 
 langchain-text-splitters
+langchain==0.1.14
+
+
