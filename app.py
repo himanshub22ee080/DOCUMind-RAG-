@@ -95,29 +95,17 @@ def load_and_process_pdfs(pdf_files, chunk_size=1500, chunk_overlap=300):
     if USE_GOOGLE_AI:
         st.info("Using Google AI Embeddings (models/embedding-001)...")
         try:
-            from langchain_google_genai import GoogleGenerativeAIEmbeddings
-            embeddings_model = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-            st.success("Google AI Embeddings initialized.")
-        except Exception as e:
-            st.error(f"Failed to initialize Google AI Embeddings: {e}")
-            return None
-
-    else:
-        st.info("Using FREE HuggingFace Embeddings (MiniLM)...")
-        try:
+            st.info("Using FREE HuggingFace Embeddings (MiniLM)...")
             from langchain_community.embeddings import HuggingFaceEmbeddings
+        
             embeddings_model = HuggingFaceEmbeddings(
                 model_name="sentence-transformers/all-MiniLM-L6-v2"
             )
-            st.success("HuggingFace Embeddings initialized.")
+        
+            st.success("HuggingFace Embeddings initialized successfully!")
         except Exception as e:
             st.error(f"Error initializing HuggingFace Embeddings: {e}")
             return None
-
-
-    if embeddings_model is None:
-        st.error("Embedding model could not be initialized.")
-        return None
 
     # --- Create IN-MEMORY FAISS vector store ---
     st.info(f"Creating IN-MEMORY FAISS index with {len(split_docs)} chunks...")
@@ -281,6 +269,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
