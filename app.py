@@ -94,7 +94,7 @@ def load_and_process_pdfs(pdf_files, chunk_size=1500, chunk_overlap=300):
     if USE_GOOGLE_AI:
         st.info("Using Google AI Embeddings (models/embedding-001)...")
         try:
-            embeddings_model = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+            embeddings_model = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
             st.info("Google AI Embeddings initialized.")
         except Exception as e:
             st.error(f"Error initializing Google AI Embeddings: {e}.")
@@ -267,5 +267,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
