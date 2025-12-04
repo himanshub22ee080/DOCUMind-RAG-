@@ -11,6 +11,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 from langchain.prompts import PromptTemplate
 from langchain_community.vectorstores.utils import filter_complex_metadata
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 # --- CHOOSE YOUR MODELS ---
 # Hardcoding to Google AI for this version
@@ -94,7 +95,8 @@ def load_and_process_pdfs(pdf_files, chunk_size=1500, chunk_overlap=300):
     if USE_GOOGLE_AI:
         st.info("Using Google AI Embeddings (models/embedding-001)...")
         try:
-            embeddings_model = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
+            # embeddings_model = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
+            embedding_model = HuggingFaceEmbeddings(model="sentence-transformers/all-MiniLM-L6-v2")
             st.info("Google AI Embeddings initialized.")
         except Exception as e:
             st.error(f"Error initializing Google AI Embeddings: {e}.")
@@ -267,6 +269,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
