@@ -5,7 +5,7 @@ import traceback
 
 # LangChain components
 from langchain_community.document_loaders import PyPDFLoader
-from langchain_text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS # <-- Import FAISS
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
@@ -267,4 +267,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
